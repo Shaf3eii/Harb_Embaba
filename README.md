@@ -18,5 +18,5 @@ A simple 2D tank shooting game built in Java using `JFrame`. Control your tank, 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/Shaf3eii/Harb_Embaba.git
-   cd tank-battle-game
+   cd Harb_Embaba
 
