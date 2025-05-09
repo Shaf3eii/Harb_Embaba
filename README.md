@@ -7,7 +7,6 @@ A simple 2D tank shooting game built in Java using `JFrame`. Control your tank, 
 
 - 🧠 Game loop with 60 FPS
 - 🔊 Sound effects (MP3 support via JavaFX)
-- ⏳ Countdown before the game starts
 - 🏆 Win/Lose detection and restart option
 - 🎮 Keyboard controls
 - 🖥️ Fullscreen support
