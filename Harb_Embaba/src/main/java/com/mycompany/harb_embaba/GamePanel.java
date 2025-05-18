@@ -31,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
     private boolean paused = false;
     private boolean startSound = false;
     private boolean gameOverSound = false;
+    private Clip clip;
     
     
     private BufferedImage bgImage;
@@ -190,8 +191,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
     
     public void playSound(String soundPath) {
         try {
+            if (clip != null && clip.isRunning()) {
+                clip.stop();
+                clip.close();
+            }
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(soundPath));
-            Clip clip = AudioSystem.getClip();
+            clip = AudioSystem.getClip();
             clip.open(audioIn);
             clip.start();
         } catch (Exception e) {
@@ -219,7 +224,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
         
         if (k.getKeyCode() == KeyEvent.VK_SPACE) {
             bullets.add(new Bullet(player.x + 20, player.y));
-            playSound("resources/shoot.wav");
+//            playSound("resources/shoot.wav");
         }
         
         if (k.getKeyCode() == KeyEvent.VK_P) {
