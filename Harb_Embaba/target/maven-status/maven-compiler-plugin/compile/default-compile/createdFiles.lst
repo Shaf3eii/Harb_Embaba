@@ -5,4 +5,5 @@ com\mycompany\harb_embaba\GamePanel$GameState.class
 com\mycompany\harb_embaba\GameState.class
 com\mycompany\harb_embaba\Player.class
 com\mycompany\harb_embaba\Bullet.class
+com\mycompany\harb_embaba\SoundPlayer.class
 com\mycompany\harb_embaba\GamePanel.class

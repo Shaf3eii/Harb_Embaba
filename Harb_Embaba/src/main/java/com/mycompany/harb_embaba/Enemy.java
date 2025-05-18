@@ -19,7 +19,8 @@ import java.io.IOException;
 
 public class Enemy {
     int x, y;
-    private int speed = 1;
+    private double yPos;
+    private double speed = 0.1;
     private BufferedImage image;
     
     
@@ -34,8 +35,17 @@ public class Enemy {
         }
     }
     
+    private int framecount = 0;
     public void update() {
-        y += speed;
+        framecount++;
+        if (framecount % 10 == 0) {
+            yPos += speed;
+            y += (int)yPos; 
+        }
+    }
+    
+    public void setSpeed(double s) {
+        this.speed = s;
     }
     
     public void draw(Graphics g) {

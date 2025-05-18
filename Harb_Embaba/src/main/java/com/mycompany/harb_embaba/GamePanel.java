@@ -21,7 +21,7 @@ import javax.sound.sampled.*; // Play Sounds
 public class GamePanel extends JPanel implements Runnable, KeyListener{
     
     private enum GameState {
-        MENU, PLAYING, GAMEOVER, WIN
+        START_SCREEN, MENU, PLAYING, GAMEOVER, WIN
     }
     
     private GameState state = GameState.MENU;
@@ -29,12 +29,19 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
     private Thread thread;
     private boolean running = false; 
     private boolean paused = false;
+    private boolean startSound = false;
+    private boolean gameOverSound = false;
+    
     
     private BufferedImage bgImage;
     private Player player;
     private ArrayList<Enemy> enemies = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
     private int score = 0;
+    private long lastSoundTime = System.currentTimeMillis();
+    private final int soundInterval = 10000;
+    private int level = 1;
+
     
     private int screenWidth;
     private int screenHeight;
@@ -59,11 +66,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
     }
     
     private void startGame() {
-        player = new Player(370, 500);
+        player = new Player(screenWidth / 2 - 25, screenHeight - 100);
         
+        int startX = screenWidth / 5;
+        int spacing = 100;
+
         for (int i = 0; i < 5; ++i) {
             for (int j = 0; j < 3; ++j) {
-                enemies.add(new Enemy(100 + i * 100, 50 + j * 60));
+                Enemy enemy = new Enemy(startX + i * spacing, 100 + j * 60);
+                enemy.setSpeed(0.1 + level * 0.5);
+                enemies.add(enemy);
             }
         }
         
@@ -80,12 +92,16 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
     
     @Override
     public void run() {
+        if (!startSound) {
+            playSound("resources/v_prepare.wav");
+            startSound = true;
+        }
         while (running) {
             if (!paused) update();
             repaint();
             
             try {
-                Thread.sleep(16);
+                Thread.sleep(30);
             } catch(InterruptedException e){ }
         } 
     }
@@ -117,9 +133,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
         
         for (Enemy e : enemies) {
             if (e.y >= player.y) {
+                gameOverSound = true;
+                playSound("resources/v_gameover.wav");
                 running = false;
                 int option = JOptionPane.showConfirmDialog(this, "Game Over! Play Again?", "Game Over", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
+                    gameOverSound = false;
                     resetGame();
                 } else {
                     System.exit(0);
@@ -131,10 +150,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
             running = false;
             int option = JOptionPane.showConfirmDialog(this, "Winner Winner Chicken Dinner! Play Again?", "Winner Winner Chicken Dinner", JOptionPane.YES_NO_OPTION);
                 if (option == JOptionPane.YES_OPTION) {
+                    level++;
                     resetGame();
                 } else {
                     System.exit(0);
                 }
+        }
+        
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastSoundTime >= soundInterval && !gameOverSound) {
+            playSound("resources/v_megalaser.wav");
+            lastSoundTime = currentTime;
         }
     }
     
@@ -180,6 +206,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
         if (state == GameState.MENU && k.getKeyCode() == KeyEvent.VK_ENTER) {
             state = GameState.PLAYING;
             startGame();
+            playSound("resources/v_getready.wav");
         }
         
         if (k.getKeyCode() == KeyEvent.VK_LEFT) {
